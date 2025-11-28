@@ -1,5 +1,7 @@
 {
-  "itemGroup.santa_logistics": "Example Mod Tab",
-  "block.santa_logistics.example_block": "Example Block",
-  "item.santa_logistics.example_item": "Example Item"
+  "itemGroup.santa_logistics": "Create: Santa Logistics",
+  "block.santa_logistics.santa_dock": "Santa Dock",
+  "gui.santa_dock.loading": "Loading remote address...",
+  "commands.santa.empty": "§cNo santa dock registered",
+  "commands.santa.title": "Santa docks:"
 }

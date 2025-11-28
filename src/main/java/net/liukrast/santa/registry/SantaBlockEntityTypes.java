@@ -1,0 +1,21 @@
+package net.liukrast.santa.registry;
+
+import net.liukrast.santa.SantaLogisticsConstants;
+import net.liukrast.santa.world.level.block.entity.SantaDockBlockEntity;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class SantaBlockEntityTypes {
+    private SantaBlockEntityTypes() {}
+
+    private static final DeferredRegister<BlockEntityType<?>> REGISTER = SantaLogisticsConstants.createDeferred(BuiltInRegistries.BLOCK_ENTITY_TYPE);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SantaDockBlockEntity>> SANTA_DOCK = REGISTER.register("santa_dock", () -> BlockEntityType.Builder.of(SantaDockBlockEntity::new, SantaBlocks.SANTA_DOCK.get()).build(null));
+
+    public static void init(IEventBus eventBus) {
+        REGISTER.register(eventBus);
+    }
+}
