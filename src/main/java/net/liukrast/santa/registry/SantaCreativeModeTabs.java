@@ -1,6 +1,6 @@
 package net.liukrast.santa.registry;
 
-import net.liukrast.santa.SantaLogisticsConstants;
+import net.liukrast.santa.SantaConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -9,7 +9,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class SantaCreativeModeTabs {
     private SantaCreativeModeTabs() {}
-    private static final DeferredRegister<CreativeModeTab> REGISTER = SantaLogisticsConstants.createDeferred(BuiltInRegistries.CREATIVE_MODE_TAB);
+    private static final DeferredRegister<CreativeModeTab> REGISTER = SantaConstants.createDeferred(BuiltInRegistries.CREATIVE_MODE_TAB);
 
     static {
         REGISTER.register("main_tab", () -> CreativeModeTab.builder()

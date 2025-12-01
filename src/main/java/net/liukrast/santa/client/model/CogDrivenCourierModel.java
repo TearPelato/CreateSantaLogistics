@@ -2,18 +2,17 @@ package net.liukrast.santa.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.liukrast.santa.SantaLogisticsConstants;
 import net.liukrast.santa.world.entity.CogDrivenCourier;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.system.NonnullDefault;
 
 @NonnullDefault
 public class CogDrivenCourierModel extends EntityModel<CogDrivenCourier> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(SantaLogisticsConstants.id("cog_driven_courier"), "main");
+    private Vec3 prev = Vec3.ZERO;
     private final ModelPart body;
 
     public CogDrivenCourierModel(ModelPart root) {
@@ -101,8 +100,11 @@ public class CogDrivenCourierModel extends EntityModel<CogDrivenCourier> {
     }
 
     @Override
-    public void setupAnim(CogDrivenCourier entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(CogDrivenCourier entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
 
+    public void setupAnim(float pitch, float yaw) {
+        body.yRot=yaw;
+        body.xRot = pitch;
     }
 
     @Override

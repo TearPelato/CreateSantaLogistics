@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -48,14 +49,17 @@ public class SantaDockBlock extends BaseEntityBlock {
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
         Containers.dropContentsOnDestroy(state, newState, level, pos);
+        super.onRemove(state, level, pos, newState, movedByPiston);
         if(level.isClientSide()) return;
         if(state.is(newState.getBlock())) return;
         SantaDocks.removeDock((ServerLevel) level, pos);
     }
 
-
+    @Override
+    protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+        return null;
+    }
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
@@ -76,7 +80,7 @@ public class SantaDockBlock extends BaseEntityBlock {
     public enum State implements StringRepresentable {
         IDLE("idle"),
         CONNECTED("connected"),
-        ADDRESS_TAKEN("address_taken");
+        ERROR("error");
 
         private final String value;
         State(String value) {

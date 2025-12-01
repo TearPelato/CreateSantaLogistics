@@ -1,6 +1,6 @@
 package net.liukrast.santa.network.protocol.game;
 
-import net.liukrast.santa.SantaLogisticsConstants;
+import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.registry.SantaBlocks;
 import net.liukrast.santa.world.level.block.SantaDockBlock;
 import net.liukrast.santa.world.level.block.SantaDocks;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SantaDockConfirmInfoPacket(String address, BlockPos pos) implements CustomPacketPayload {
-    public static final Type<SantaDockConfirmInfoPacket> PACKET_TYPE = new Type<>(SantaLogisticsConstants.id("santa_dock_confirm_info"));
+    public static final Type<SantaDockConfirmInfoPacket> PACKET_TYPE = new Type<>(SantaConstants.id("santa_dock_confirm_info"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SantaDockConfirmInfoPacket> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, SantaDockConfirmInfoPacket::address,
             BlockPos.STREAM_CODEC, SantaDockConfirmInfoPacket::pos,
@@ -33,11 +33,11 @@ public record SantaDockConfirmInfoPacket(String address, BlockPos pos) implement
             player.level().setBlock(pos, SantaBlocks.SANTA_DOCK.get().defaultBlockState().setValue(SantaDockBlock.STATE, SantaDockBlock.State.IDLE), 3);
             return;
         }
-        boolean result = SantaDocks.addDock((ServerLevel) player.level(), address, pos);
-        if(result) {
+        var result = SantaDocks.addDock((ServerLevel) player.level(), address, pos);
+        /*if(result.isSuccessful()) {
             //TODO: Display particles
-        }
-        player.level().setBlock(pos, SantaBlocks.SANTA_DOCK.get().defaultBlockState().setValue(SantaDockBlock.STATE, result ? SantaDockBlock.State.CONNECTED : SantaDockBlock.State.ADDRESS_TAKEN), 3);
-
+        }*/
+        player.level().setBlock(pos, SantaBlocks.SANTA_DOCK.get().defaultBlockState().setValue(SantaDockBlock.STATE, result.isSuccessful() ? SantaDockBlock.State.CONNECTED : SantaDockBlock.State.ERROR), 3);
+        //TODO: Modify blockentity to display error info
     }
 }

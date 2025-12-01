@@ -3,7 +3,8 @@ package net.liukrast.santa.world.level.block;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
-import net.liukrast.santa.SantaLogisticsConstants;
+import net.liukrast.santa.SantaConfig;
+import net.liukrast.santa.SantaConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -32,11 +33,12 @@ public class SantaDocks extends SavedData {
         this.docks = docks;
     }
 
-    public boolean addDock(String name, BlockPos pos) {
-        if(docks.containsKey(name)) return false;
+    private AddStatus addDock(String name, BlockPos pos) {
+        if(docks.containsKey(name)) return AddStatus.ALREADY_TAKEN;
+        if(docks.size() >= SantaConfig.MAX_DOCK_AMOUNT.get()) return AddStatus.OUT_OF_BOUND;
         docks.put(name, pos);
         setDirty();
-        return true;
+        return AddStatus.SUCCESS;
     }
 
     public void removeDock(BlockPos pos) {
@@ -53,7 +55,7 @@ public class SantaDocks extends SavedData {
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         Map<String, BlockPos> map = DOCKS_CODEC
                 .parse(ops, tag)
-                .resultOrPartial(SantaLogisticsConstants.LOGGER::error)
+                .resultOrPartial(SantaConstants.LOGGER::error)
                 .orElseGet(HashMap::new);
         return new SantaDocks(HashBiMap.create(map));
     }
@@ -63,25 +65,28 @@ public class SantaDocks extends SavedData {
         return get(level).get(pos);
     }
 
-    public static boolean addDock(ServerLevel level, String name, BlockPos pos) {
+    public static AddStatus addDock(ServerLevel level, String name, BlockPos pos) {
+        long time = level.getDayTime()%24000;
+        if(time >= SantaConstants.NIGHT_START && time <= SantaConstants.NIGHT_END) return AddStatus.NIGHT;
         return get(level).addDock(name, pos);
     }
 
     public static void removeDock(ServerLevel level, BlockPos pos) {
+        //TODO: Breaking a dock during night will break the night cycle, and de-sync client with server
         get(level).removeDock(pos);
     }
 
     public static SantaDocks get(ServerLevel level) {
         return level
                 .getDataStorage()
-                .computeIfAbsent(new SavedData.Factory<>(SantaDocks::new, SantaDocks::load), SantaLogisticsConstants.MOD_ID + "_santa_docks");
+                .computeIfAbsent(new SavedData.Factory<>(SantaDocks::new, SantaDocks::load), SantaConstants.MOD_ID + "_santa_docks");
     }
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         DOCKS_CODEC.encodeStart(ops, docks)
-                .resultOrPartial(SantaLogisticsConstants.LOGGER::error)
+                .resultOrPartial(SantaConstants.LOGGER::error)
                 .ifPresent(encoded -> {
                     if(encoded instanceof CompoundTag compoundTag)
                         tag.merge(compoundTag);
@@ -113,5 +118,21 @@ public class SantaDocks extends SavedData {
     @Override
     public String toString() {
         return "SantaDocks{docks=" + docks + '}';
+    }
+
+    public int size() {
+        return docks.size();
+    }
+
+    public Map<BlockPos, String> blockPosMap() {
+        return docks.inverse();
+    }
+
+    public enum AddStatus {
+        SUCCESS, ALREADY_TAKEN, OUT_OF_BOUND, NIGHT;
+
+        public boolean isSuccessful() {
+            return this == SUCCESS;
+        }
     }
 }

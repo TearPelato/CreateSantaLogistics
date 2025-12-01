@@ -3,5 +3,6 @@
   "block.santa_logistics.santa_dock": "Santa Dock",
   "gui.santa_dock.loading": "Loading remote address...",
   "commands.santa.empty": "§cNo santa dock registered",
-  "commands.santa.title": "Santa docks:"
+  "commands.santa.title": "Santa docks:",
+  "container.santa_logistics.santa": "Santa's Sleigh"
 }

@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.CreateLang;
-import net.liukrast.santa.SantaLogisticsConstants;
+import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.network.protocol.game.SantaDockConfirmInfoPacket;
 import net.liukrast.santa.world.inventory.SantaDockMenu;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class SantaDockScreen extends AbstractSimiContainerScreen<SantaDockMenu> {
-    private static final ResourceLocation TEXTURE = SantaLogisticsConstants.id("textures/gui/santa_dock.png");
+    private static final ResourceLocation TEXTURE = SantaConstants.id("textures/gui/santa_dock.png");
     private EditBox editBox;
 
     public SantaDockScreen(SantaDockMenu menu, Inventory inventory, Component title) {
