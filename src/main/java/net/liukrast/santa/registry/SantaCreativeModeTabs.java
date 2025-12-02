@@ -15,7 +15,10 @@ public class SantaCreativeModeTabs {
         REGISTER.register("main_tab", () -> CreativeModeTab.builder()
                 .title(Component.translatable("itemGroup.santa_logistics"))
                 .icon(SantaBlocks.SANTA_DOCK.asItem()::getDefaultInstance)
-                .displayItems((pars, out) -> out.accept(SantaBlocks.SANTA_DOCK))
+                .displayItems((pars, out) -> {
+                    out.accept(SantaBlocks.SANTA_DOCK);
+                    out.accept(SantaBlocks.SANTA_DOOR);
+                })
                 .build());
     }
 

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "santa_logistics:santa_door"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "santa_logistics:blocks/santa_door"
+}

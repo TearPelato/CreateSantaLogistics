@@ -2,6 +2,7 @@ package net.liukrast.santa.registry;
 
 import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.world.level.block.SantaDockBlock;
+import net.liukrast.santa.world.level.block.SantaDoorBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
@@ -17,9 +18,11 @@ public class SantaBlocks {
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SantaConstants.MOD_ID);
 
     public static final DeferredBlock<SantaDockBlock> SANTA_DOCK = REGISTER.register("santa_dock", () -> new SantaDockBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<SantaDoorBlock> SANTA_DOOR = REGISTER.register("santa_door", () -> new SantaDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 
     static {
         ITEMS.register("santa_dock", () -> new BlockItem(SANTA_DOCK.get(), new Item.Properties()));
+        ITEMS.register("santa_door", () -> new BlockItem(SANTA_DOOR.get(), new Item.Properties()));
     }
 
     public static void init(IEventBus eventBus) {

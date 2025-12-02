@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -86,10 +87,9 @@ public class SantaBase extends SavedData {
             }
             int x = pos.getBlockX(8);
             int z = pos.getBlockZ(19);
-            //TODO: Must flag the chunks to generate here, else we cannot access the world height and will return -64
-            //int h = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-            level.getChunkSource().getChunk(pos.x, pos.z, ChunkStatus.FEATURES, true);
-            int h = level.getChunk(pos.x, pos.z).getHeight(Heightmap.Types.WORLD_SURFACE_WG, x & 15, z & 15);
+            ChunkAccess chunk = level.getChunkSource().getChunk(pos.x, pos.z, ChunkStatus.FULL, true);
+            assert chunk != null;
+            int h = level.getChunk(pos.x, pos.z+1).getHeight(Heightmap.Types.WORLD_SURFACE, x, z-16);
             BlockPos pos1 = new BlockPos(x, h, z);
             base.setPos(pos1);
             sendUpdate(level, pos1);
@@ -126,7 +126,7 @@ public class SantaBase extends SavedData {
                     if (!areChunksNotGenerated(level, chunkPos)) continue;
                     backup = chunkPos;
                     if (!isSnowy(biome)) continue;
-                    SantaConstants.LOGGER.info("Found potential chunk {}", pos);
+                    SantaConstants.LOGGER.info("Found potential chunk {}", chunkPos);
                     return chunkPos;
                 }
             }

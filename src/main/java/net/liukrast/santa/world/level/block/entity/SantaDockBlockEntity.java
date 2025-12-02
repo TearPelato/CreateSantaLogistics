@@ -1,5 +1,6 @@
 package net.liukrast.santa.world.level.block.entity;
 
+import com.simibubi.create.AllSoundEvents;
 import net.liukrast.santa.registry.SantaBlockEntityTypes;
 import net.liukrast.santa.world.inventory.SantaDockMenu;
 import net.minecraft.core.BlockPos;
@@ -8,7 +9,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -19,7 +19,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.lwjgl.system.NonnullDefault;
@@ -30,11 +29,11 @@ public class SantaDockBlockEntity extends BaseContainerBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
-            SantaDockBlockEntity.this.playSound(state, SoundEvents.BARREL_OPEN);
+            SantaDockBlockEntity.this.playSound(AllSoundEvents.DEPOT_PLOP.getMainEvent());
         }
 
         protected void onClose(Level level, BlockPos pos, BlockState state) {
-            SantaDockBlockEntity.this.playSound(state, SoundEvents.BARREL_CLOSE);
+            SantaDockBlockEntity.this.playSound(AllSoundEvents.DEPOT_PLOP.getMainEvent());
         }
 
         protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int a, int b) {
@@ -107,8 +106,8 @@ public class SantaDockBlockEntity extends BaseContainerBlockEntity {
         this.openersCounter.recheckOpeners(level, this.getBlockPos(), this.getBlockState());
     }
 
-    void playSound(BlockState pState, SoundEvent pSound) {
-        if(level != null) {;
+    void playSound(SoundEvent pSound) {
+        if(level != null) {
             double d0 = (double) this.worldPosition.getX() + 0.5D;
             double d1 = (double) this.worldPosition.getY() + 0.5D;
             double d2 = (double) this.worldPosition.getZ() + 0.5D;

@@ -1,6 +1,7 @@
 package net.liukrast.santa.world.level.block;
 
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import net.liukrast.santa.world.level.block.entity.SantaDockBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 
 @NonnullDefault
-public class SantaDockBlock extends BaseEntityBlock {
+public class SantaDockBlock extends BaseEntityBlock implements IWrenchable {
     private static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(SantaDockBlock::new);
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 

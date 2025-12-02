@@ -1,0 +1,7 @@
+{
+  "variants": {
+	"": {
+	  "model": "santa_logistics:block/santa_door"
+	}
+  }
+}

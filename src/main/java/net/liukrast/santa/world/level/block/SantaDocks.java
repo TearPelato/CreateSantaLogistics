@@ -10,27 +10,33 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @NonnullDefault
 public class SantaDocks extends SavedData {
     private static final Codec<Map<String, BlockPos>> DOCKS_CODEC = Codec.unboundedMap(Codec.STRING, BlockPos.CODEC);
     private final BiMap<String, BlockPos> docks;
+    private final List<BlockPos> queuedForRemoval;
 
     public SantaDocks() {
-        this(HashBiMap.create());
+        this(HashBiMap.create(), new ArrayList<>());
     }
 
-    private SantaDocks(BiMap<String, BlockPos> docks) {
+    private SantaDocks(BiMap<String, BlockPos> docks, List<BlockPos> queuedForRemoval) {
         this.docks = docks;
+        this.queuedForRemoval = queuedForRemoval;
     }
 
     private AddStatus addDock(String name, BlockPos pos) {
@@ -54,10 +60,16 @@ public class SantaDocks extends SavedData {
     public static SantaDocks load(CompoundTag tag, HolderLookup.Provider registries) {
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         Map<String, BlockPos> map = DOCKS_CODEC
+                .fieldOf("docks").codec()
                 .parse(ops, tag)
                 .resultOrPartial(SantaConstants.LOGGER::error)
                 .orElseGet(HashMap::new);
-        return new SantaDocks(HashBiMap.create(map));
+        List<BlockPos> queuedForRemoval = BlockPos.CODEC.listOf()
+                .fieldOf("queuedForRemoval").codec()
+                .parse(ops, tag)
+                .resultOrPartial()
+                .orElseGet(ArrayList::new);
+        return new SantaDocks(HashBiMap.create(map), new ArrayList<>(queuedForRemoval));
     }
 
     @Nullable
@@ -72,8 +84,14 @@ public class SantaDocks extends SavedData {
     }
 
     public static void removeDock(ServerLevel level, BlockPos pos) {
-        //TODO: Breaking a dock during night will break the night cycle, and de-sync client with server
-        get(level).removeDock(pos);
+        long dayTime = level.getDayTime()%24000;
+        var docks = get(level);
+        if(dayTime > SantaConstants.NIGHT_START && dayTime < SantaConstants.NIGHT_END) {
+            if(!docks.queuedForRemoval.contains(pos)) {
+                docks.queuedForRemoval.add(pos);
+                docks.setDirty();
+            }
+        } else docks.removeDock(pos);
     }
 
     public static SantaDocks get(ServerLevel level) {
@@ -85,11 +103,17 @@ public class SantaDocks extends SavedData {
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        DOCKS_CODEC.encodeStart(ops, docks)
+        DOCKS_CODEC.fieldOf("docks").codec().encodeStart(ops, docks)
                 .resultOrPartial(SantaConstants.LOGGER::error)
                 .ifPresent(encoded -> {
                     if(encoded instanceof CompoundTag compoundTag)
                         tag.merge(compoundTag);
+                });
+        BlockPos.CODEC.listOf().fieldOf("queuedForRemoval").codec().encodeStart(ops, queuedForRemoval)
+                .resultOrPartial(SantaConstants.LOGGER::error)
+                .ifPresent(encoded -> {
+                    if(encoded instanceof CompoundTag ct)
+                        tag.merge(ct);
                 });
         return tag;
     }
@@ -103,12 +127,17 @@ public class SantaDocks extends SavedData {
             if(entry.getKey() == null) continue;
             if(entry.getValue() == null) continue;
             var pos = entry.getValue();
+            boolean flag = queuedForRemoval.contains(pos);
             Component line = Component.literal("• ").withStyle(ChatFormatting.WHITE)
-                    .append(Component.literal(entry.getKey()).withStyle(ChatFormatting.RED))
+                    .append(Component.literal(entry.getKey())
+                            .withStyle(flag?ChatFormatting.RED:ChatFormatting.GREEN).withStyle(style -> style
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.santa_dock." + (flag ? "to_be_removed" : "available"))))))
                     .append(Component.literal("  →  ")).withStyle(ChatFormatting.GOLD)
                     .append(Component.literal(
-                            "(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")"
-                    ).withStyle(ChatFormatting.WHITE));
+                            "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]"
+                    ).withStyle(ChatFormatting.GREEN).withStyle(style -> style
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/tp @s %s %s %s", pos.getX(), pos.getY(), pos.getZ())))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))));
             root.append(line);
             if(++i < size) root.append("\n");
         }
@@ -126,6 +155,14 @@ public class SantaDocks extends SavedData {
 
     public Map<BlockPos, String> blockPosMap() {
         return docks.inverse();
+    }
+
+    public void updateQueuedDocks() {
+        for(BlockPos pos : queuedForRemoval) {
+            docks.inverse().remove(pos);
+        }
+        queuedForRemoval.clear();
+        setDirty();
     }
 
     public enum AddStatus {

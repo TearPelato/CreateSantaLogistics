@@ -6,6 +6,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.stream.Stream;
+
 public class SantaConstants {
     private SantaConstants() {}
 
@@ -25,5 +28,15 @@ public class SantaConstants {
 
     public static <T> DeferredRegister<T> createDeferred(Registry<T> registry) {
         return DeferredRegister.create(registry, MOD_ID);
+    }
+
+    public static <T> Stream<T> getElements(Registry<T> registry) {
+        return getElementEntries(registry).map(Map.Entry::getValue);
+    }
+
+    public static <T> Stream<Map.Entry<String, T>> getElementEntries(Registry<T> registry) {
+        return registry.entrySet().stream()
+                .filter(t -> t.getKey().location().getNamespace().equals(MOD_ID))
+                .map(e -> Map.entry(e.getKey().location().getPath(), e.getValue()));
     }
 }

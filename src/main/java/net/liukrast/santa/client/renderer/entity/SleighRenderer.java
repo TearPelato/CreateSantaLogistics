@@ -29,10 +29,9 @@ public class SleighRenderer {
 
     public static void render(float smoothDayTime, PoseStack poseStack, MultiBufferSource bufferSource) {
         if (ORIGIN == null) return;
-        poseStack.pushPose();
         float yaw;
         float pitch = 0;
-        if(DOCKS == null || DOCKS.size() < 2) {
+        if(DOCKS == null || DOCKS.size() < 3) {
             poseStack.translate(-ORIGIN.getX(), -ORIGIN.getY(), ORIGIN.getZ());
             yaw = (float) Math.PI;
         } else if(smoothDayTime < SantaConstants.NIGHT_START || smoothDayTime > SantaConstants.NIGHT_END) {
@@ -65,14 +64,14 @@ public class SleighRenderer {
             int index = Math.min((int) (progress / interval), steps - 1);
 
             float intervalStart = interval * index;
-            float intervalProgress = (progress - intervalStart) / interval;
+            float polyProgress = (progress - intervalStart) / interval;//(float) (1-Math.pow(x-1, 2));
 
             Node current = DOCKS.get(index);
             Node next = DOCKS.get(index+1);
 
 
-            Vec2 b = bezier(current, next, intervalProgress);
-            yaw = angle(current, next, intervalProgress);
+            Vec2 b = bezier(current, next, polyProgress);
+            yaw = angle(current, next, polyProgress);
             poseStack.translate(-b.x, -ORIGIN.getY()-SantaConstants.EXIT_HEIGTH, b.y);
         }
 
@@ -84,8 +83,6 @@ public class SleighRenderer {
                 packedLight,
                 OverlayTexture.NO_OVERLAY
         );
-
-        poseStack.popPose();
     }
 
     private static Vec2 bezier(Node a, Node b, float t) {

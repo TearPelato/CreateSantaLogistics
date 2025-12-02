@@ -1,0 +1,13 @@
+{
+  "block.santa_logistics.santa_dock": "Santa Dock",
+  "block.santa_logistics.santa_door": "Santa Door",
+  "chat.santa_dock.available": "Santa dock is connected and active",
+  "chat.santa_dock.to_be_removed": "Santa dock will be deleted at the end of the night",
+  "commands.santa.empty": "§cNo santa dock registered",
+  "commands.santa.title": "Santa docks:",
+  "commands.santa.try_spawn_santa_base.already_placed": "Santa's base was already located at %s (%s blocks away)",
+  "commands.santa.try_spawn_santa_base.failed": "Unable to automatically generate santa's base. Please use the manual command",
+  "commands.santa.try_spawn_santa_base.success": "Successfully placed Santa's base at %s (%s blocks away)",
+  "container.santa_logistics.santa": "Santa's Sleigh",
+  "itemGroup.santa_logistics": "Create: Santa Logistics"
+}
