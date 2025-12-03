@@ -4,13 +4,15 @@
   "package": "net.liukrast.santa.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+
   ],
   "client": [
+	"WifiEffectPacketMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+	"defaultRequire": 1
   },
   "overwrites": {
-    "requireAnnotations": true
+	"requireAnnotations": true
   }
 }

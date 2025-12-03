@@ -1,0 +1,6 @@
+{
+	"parent":"santa_logistics:block/santa_dock",
+	"textures": {
+		"screen": "santa_logistics:block/santa_dock_side_off"
+	}
+}

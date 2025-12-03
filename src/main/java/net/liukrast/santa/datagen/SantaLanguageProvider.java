@@ -26,6 +26,17 @@ public class SantaLanguageProvider extends LanguageProvider {
         add("container.santa_logistics.santa", "Santa's Sleigh");
         add("chat.santa_dock.available", "Santa dock is connected and active");
         add("chat.santa_dock.to_be_removed", "Santa dock will be deleted at the end of the night");
+
+        add("block.santa_logistics.santa_dock.tooltip_0", "Status: %s");
+        add("block.santa_logistics.santa_dock.status.connected", "§aConnected");
+        add("block.santa_logistics.santa_dock.status.idle", "Idle");
+        add("block.santa_logistics.santa_dock.status.error", "§cError");
+        add("block.santa_logistics.santa_dock.status.error.tooltip_0", "Reason:");
+        add("block.santa_logistics.santa_dock.status.error.night", "Santa is already flying");
+        add("block.santa_logistics.santa_dock.status.error.already_taken", "Address taken");
+        add("block.santa_logistics.santa_dock.status.error.out_of_bound", "Max docks per world reached");
+        add("block.santa_logistics.santa_dock.status.error.wrong_dimension", "Dock outside of the overworld");
+        add("block.santa_logistics.santa_dock.status.connected.tooltip_0", "Santa will pass by this dock tonight");
     }
 
     public String autoName(String id) {

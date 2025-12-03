@@ -1,13 +1,23 @@
 package net.liukrast.santa.world.level.block.entity;
 
+import com.simibubi.create.AllParticleTypes;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.logistics.packagerLink.WiFiParticle;
 import net.liukrast.santa.registry.SantaBlockEntityTypes;
 import net.liukrast.santa.world.inventory.SantaDockMenu;
+import net.liukrast.santa.world.level.block.SantaDockBlock;
+import net.liukrast.santa.world.level.block.SantaDocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -21,11 +31,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 
+import java.util.List;
+
 @NonnullDefault
-public class SantaDockBlockEntity extends BaseContainerBlockEntity {
-    
+public class SantaDockBlockEntity extends BaseContainerBlockEntity implements IHaveGoggleInformation {
+    private SantaDocks.AddStatus status = SantaDocks.AddStatus.SUCCESS;
+
+    /* CONTAINER */
     private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
@@ -53,10 +68,12 @@ public class SantaDockBlockEntity extends BaseContainerBlockEntity {
         super(SantaBlockEntityTypes.SANTA_DOCK.get(), pos, blockState);
     }
 
+    /* NBT */
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         ContainerHelper.saveAllItems(tag, this.items, registries);
+        tag.putInt("status", status.ordinal());
     }
 
     @Override
@@ -64,7 +81,33 @@ public class SantaDockBlockEntity extends BaseContainerBlockEntity {
         super.loadAdditional(tag, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, this.items, registries);
+        status = SantaDocks.AddStatus.values()[tag.getInt("status")];
     }
+
+    /* SYNC */
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        var tag = super.getUpdateTag(registries);
+        tag.putInt("status", status.ordinal());
+        return tag;
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        super.handleUpdateTag(tag, lookupProvider);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        super.onDataPacket(net, pkt, lookupProvider);
+    }
+
+    /* CONTAINER */
 
     @Override
     public int getContainerSize() {
@@ -115,4 +158,32 @@ public class SantaDockBlockEntity extends BaseContainerBlockEntity {
         }
     }
 
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        var state = getBlockState().getValue(SantaDockBlock.STATE);
+        tooltip.add(Component.literal("    ").append(Component.translatable(
+                "block.santa_logistics.santa_dock.tooltip_0",
+                Component.translatable("block.santa_logistics.santa_dock.status." + state.getSerializedName())
+        )));
+        if(state == SantaDockBlock.State.CONNECTED) {
+            tooltip.add(Component.literal("    ").append(Component.translatable("block.santa_logistics.santa_dock.status.connected.tooltip_0")));
+        } else if(state == SantaDockBlock.State.ERROR) {
+            tooltip.add(Component.translatable("block.santa_logistics.santa_dock.status.error.tooltip_0"));
+            tooltip.add(Component.translatable("block.santa_logistics.santa_dock.status.error."+status.toString().toLowerCase()));
+        }
+        return true;
+    }
+
+    public void setStatus(SantaDocks.AddStatus result) {
+        this.status = result;
+        setChanged();
+        if (level instanceof ServerLevel serverLevel)
+            serverLevel.getChunkSource().blockChanged(getBlockPos());
+    }
+
+    public void playEffect() {
+        var pos = this.worldPosition;
+        AllSoundEvents.STOCK_LINK.playAt(level, worldPosition, 1.0f, 1.0f, false);
+        level.addParticle(new WiFiParticle.Data(), pos.getX(), pos.getY()+0.75f, pos.getZ()+0.5f, 1, 1, 1);
+    }
 }

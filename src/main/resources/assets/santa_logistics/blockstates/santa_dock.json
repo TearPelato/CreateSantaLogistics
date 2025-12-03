@@ -1,0 +1,13 @@
+{
+  "variants": {
+	"state=idle": {
+	  "model": "santa_logistics:block/santa_dock"
+	},
+	"state=connected": {
+	  "model": "santa_logistics:block/santa_dock_on"
+	},
+	"state=error": {
+	  "model": "santa_logistics:block/santa_dock_off"
+	}
+  }
+}

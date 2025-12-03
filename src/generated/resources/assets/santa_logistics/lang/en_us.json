@@ -1,5 +1,15 @@
 {
   "block.santa_logistics.santa_dock": "Santa Dock",
+  "block.santa_logistics.santa_dock.status.connected": "§aConnected",
+  "block.santa_logistics.santa_dock.status.connected.tooltip_0": "Santa will pass by this dock tonight",
+  "block.santa_logistics.santa_dock.status.error": "§cError",
+  "block.santa_logistics.santa_dock.status.error.already_taken": "Address taken",
+  "block.santa_logistics.santa_dock.status.error.night": "Santa is already flying",
+  "block.santa_logistics.santa_dock.status.error.out_of_bound": "Max docks per world reached",
+  "block.santa_logistics.santa_dock.status.error.tooltip_0": "Reason:",
+  "block.santa_logistics.santa_dock.status.error.wrong_dimension": "Dock outside of the overworld",
+  "block.santa_logistics.santa_dock.status.idle": "Idle",
+  "block.santa_logistics.santa_dock.tooltip_0": "Status: %s",
   "block.santa_logistics.santa_door": "Santa Door",
   "chat.santa_dock.available": "Santa dock is connected and active",
   "chat.santa_dock.to_be_removed": "Santa dock will be deleted at the end of the night",
@@ -9,5 +19,7 @@
   "commands.santa.try_spawn_santa_base.failed": "Unable to automatically generate santa's base. Please use the manual command",
   "commands.santa.try_spawn_santa_base.success": "Successfully placed Santa's base at %s (%s blocks away)",
   "container.santa_logistics.santa": "Santa's Sleigh",
+  "entity.santa_logistics.robo_elf": "Robo Elf",
+  "item.santa_logistics.robo_elf_spawn_egg": "Robo Elf Spawn Egg",
   "itemGroup.santa_logistics": "Create: Santa Logistics"
 }

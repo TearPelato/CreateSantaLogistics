@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -26,14 +27,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @NonnullDefault
 public class SantaDoorBlock extends AbstractFacingMultipartBlock implements EntityBlock {
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
     public SantaDoorBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LOCKED, false));
+        registerDefaultState(defaultBlockState().setValue(LOCKED, false).setValue(POWERED, false).setValue(OPEN, false));
     }
 
     @Override
@@ -53,13 +57,14 @@ public class SantaDoorBlock extends AbstractFacingMultipartBlock implements Enti
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(OPEN, LOCKED);
+        builder.add(OPEN, LOCKED, POWERED);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(state.getValue(LOCKED) && !player.getAbilities().instabuild) return InteractionResult.PASS;
-        forEachElement(pos, state, pos1 -> level.setBlock(pos1, level.getBlockState(pos1).cycle(OPEN), 3));
+        state = state.cycle(OPEN);
+        level.setBlock(pos, state, 10);
         // Playsound?
         level.gameEvent(player, state.getValue(OPEN) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
         return InteractionResult.sidedSuccess(level.isClientSide);
@@ -91,5 +96,23 @@ public class SantaDoorBlock extends AbstractFacingMultipartBlock implements Enti
         else return box(0, 0, 5, 16, 16, 11);
     }
 
-    //TODO: Redstone activation
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+        if(state.getValue(LOCKED)) return;
+        AtomicBoolean flag = new AtomicBoolean(false);
+        forEachElement(pos, state, pos1 -> flag.set(flag.get() | level.hasNeighborSignal(pos1)));
+        if(this == neighborBlock || flag.get() == state.getValue(POWERED)) return;
+        if(flag.get() != state.getValue(OPEN)) {
+            // Play sound??
+            level.gameEvent(null, flag.get() ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
+        }
+        level.setBlock(pos, state.setValue(POWERED, flag.get()).setValue(OPEN, flag.get()), 2);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if(!neighborState.is(this)) return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return neighborState.setValue(FACING, state.getValue(FACING)).setValue(getPartsProperty(), state.getValue(getPartsProperty()));
+    }
 }

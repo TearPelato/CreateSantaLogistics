@@ -50,6 +50,7 @@ public class Santa {
         SantaCreativeModeTabs.init(eventBus);
         SantaBlocks.init(eventBus);
         SantaEntityTypes.init(eventBus);
+        SantaItems.init(eventBus);
         eventBus.addListener(SantaEntityTypes::entityAttributeCreation);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
         NeoForge.EVENT_BUS.addListener(this::levelTickPost);

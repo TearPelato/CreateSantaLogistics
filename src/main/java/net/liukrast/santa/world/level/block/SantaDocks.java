@@ -40,8 +40,11 @@ public class SantaDocks extends SavedData {
     }
 
     private AddStatus addDock(String name, BlockPos pos) {
+        if(pos.equals(docks.get(name))) return AddStatus.SUCCESS;
         if(docks.containsKey(name)) return AddStatus.ALREADY_TAKEN;
         if(docks.size() >= SantaConfig.MAX_DOCK_AMOUNT.get()) return AddStatus.OUT_OF_BOUND;
+        var str = docks.inverse().get(pos);
+        docks.remove(str);
         docks.put(name, pos);
         setDirty();
         return AddStatus.SUCCESS;
@@ -166,7 +169,7 @@ public class SantaDocks extends SavedData {
     }
 
     public enum AddStatus {
-        SUCCESS, ALREADY_TAKEN, OUT_OF_BOUND, NIGHT;
+        SUCCESS, ALREADY_TAKEN, OUT_OF_BOUND, NIGHT, WRONG_DIMENSION;
 
         public boolean isSuccessful() {
             return this == SUCCESS;

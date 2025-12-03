@@ -2,20 +2,19 @@ package net.liukrast.santa.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.liukrast.santa.world.entity.CogDrivenCourier;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.RenderType;
 import org.lwjgl.system.NonnullDefault;
 
 @NonnullDefault
-public class CogDrivenCourierModel extends EntityModel<CogDrivenCourier> {
-    private Vec3 prev = Vec3.ZERO;
+public class CogDrivenCourierModel extends Model {
     private final ModelPart body;
 
     public CogDrivenCourierModel(ModelPart root) {
+        super(RenderType::entityCutout);
         this.body = root.getChild("body");
         this.body.getChild("tail");
         ModelPart back_left = this.body.getChild("back_left");
@@ -98,9 +97,6 @@ public class CogDrivenCourierModel extends EntityModel<CogDrivenCourier> {
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
-
-    @Override
-    public void setupAnim(CogDrivenCourier entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
 
     public void setupAnim(float pitch, float yaw) {
         body.yRot=yaw;

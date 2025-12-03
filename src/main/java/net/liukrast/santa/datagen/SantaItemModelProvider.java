@@ -2,7 +2,9 @@ package net.liukrast.santa.datagen;
 
 import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.registry.SantaBlocks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -14,5 +16,7 @@ public class SantaItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         basicItem(SantaBlocks.SANTA_DOOR.asItem());
+        simpleBlockItem(SantaBlocks.SANTA_DOCK.get());
+        SantaConstants.getElements(BuiltInRegistries.ITEM).filter(i -> i instanceof SpawnEggItem).forEach(this::spawnEggItem);
     }
 }

@@ -89,21 +89,31 @@ public class SantaDoorBlockEntityRenderer implements BlockEntityRenderer<SantaDo
     @Override
     public void render(SantaDoorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         var facing = blockEntity.getBlockState().getValue(SantaDoorBlock.FACING);
-        int flag = blockEntity.getBlockState().getValue(SantaDoorBlock.OPEN) ? 1 : 0;
         poseStack.scale(-1, -1, 1);
         poseStack.translate(facing.getStepZ() == 0 ? -0.5 : facing.getStepZ() < 0 ? -1 : 0, -1.5, facing.getStepX() == 0 ? 0.5 : facing.getStepX() > 0 ? 1 : 0);
         poseStack.mulPose(Axis.YP.rotationDegrees(180 + facing.toYRot()));
         poseStack.translate(0.5, 0, 0);
+        boolean flag = blockEntity.getBlockState().getValue(SantaDoorBlock.OPEN);
 
-        int speed = 50;
-        blockEntity.progress = blockEntity.progress < 0 ? flag : (blockEntity.progress*(speed-1)+flag)/speed;
-        body.yRot = blockEntity.progress * (Mth.HALF_PI-0.3f);
-        lock_1.yRot = blockEntity.progress;
-        lock_2.yRot = blockEntity.progress*1.5f;
-        lock_3.yRot = blockEntity.progress*2;
-        lock_4.yRot = -blockEntity.progress;
-        lock_5.yRot = -blockEntity.progress*1.5f;
-        lock_6.yRot = -blockEntity.progress*2;
+        long gameTime = blockEntity.getLevel() == null ? 0 : blockEntity.getLevel().getGameTime();
+        if(blockEntity.lastStateTime < 0) {
+            blockEntity.lastState = flag;
+            blockEntity.lastStateTime = 0;
+        }
+        if(blockEntity.lastState != flag) {
+            blockEntity.lastStateTime = gameTime + (long)(Mth.clamp(gameTime - blockEntity.lastStateTime, 0, 60)/60f);
+            blockEntity.lastState = flag;
+        }
+        float xProgress = Mth.clamp(Mth.clamp(gameTime - blockEntity.lastStateTime, 0, 60) + partialTick, 0, 60)/60f;
+        float progress = (float) (flag ? 1-Math.pow(xProgress-1, 4) : Math.pow(xProgress-1, 4));
+
+        body.yRot = progress* (Mth.HALF_PI-0.3f);
+        lock_1.yRot = progress;
+        lock_2.yRot = progress*1.5f;
+        lock_3.yRot = progress*2;
+        lock_4.yRot = -progress;
+        lock_5.yRot = -progress*1.5f;
+        lock_6.yRot = -progress*2;
         assert blockEntity.getLevel() != null;
         float cogSpeed = (blockEntity.getLevel().getGameTime() + partialTick)/2;
         small_cog.zRot = cogSpeed;
