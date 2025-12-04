@@ -17,6 +17,7 @@ public class SantaItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         basicItem(SantaBlocks.SANTA_DOOR.asItem());
         simpleBlockItem(SantaBlocks.SANTA_DOCK.get());
+        simpleBlockItem(SantaBlocks.ELF_CHARGE_STATION.get());
         SantaConstants.getElements(BuiltInRegistries.ITEM).filter(i -> i instanceof SpawnEggItem).forEach(this::spawnEggItem);
     }
 }

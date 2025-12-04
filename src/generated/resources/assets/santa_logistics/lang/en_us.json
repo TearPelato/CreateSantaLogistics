@@ -21,5 +21,8 @@
   "container.santa_logistics.santa": "Santa's Sleigh",
   "entity.santa_logistics.robo_elf": "Robo Elf",
   "item.santa_logistics.robo_elf_spawn_egg": "Robo Elf Spawn Egg",
-  "itemGroup.santa_logistics": "Create: Santa Logistics"
+  "itemGroup.santa_logistics": "Create: Santa Logistics",
+  "santa_logistics.gui.robo_elf.capacity": "Remaining Charge",
+  "santa_logistics.gui.robo_elf.info_header": "Robo Elf Information:",
+  "santa_logistics.gui.robo_elf.title": "Activity Stress"
 }

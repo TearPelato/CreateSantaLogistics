@@ -37,6 +37,14 @@ public class SantaLanguageProvider extends LanguageProvider {
         add("block.santa_logistics.santa_dock.status.error.out_of_bound", "Max docks per world reached");
         add("block.santa_logistics.santa_dock.status.error.wrong_dimension", "Dock outside of the overworld");
         add("block.santa_logistics.santa_dock.status.connected.tooltip_0", "Santa will pass by this dock tonight");
+
+        addPrefixed("gui.robo_elf.info_header", "Robo Elf Information:");
+        addPrefixed("gui.robo_elf.title", "Activity Stress");
+        addPrefixed("gui.robo_elf.capacity", "Remaining Charge");
+    }
+
+    private void addPrefixed(String key, String value) {
+        add("santa_logistics." + key, value);
     }
 
     public String autoName(String id) {

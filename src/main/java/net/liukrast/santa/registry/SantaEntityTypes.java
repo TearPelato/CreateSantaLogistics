@@ -20,7 +20,7 @@ public class SantaEntityTypes {
 
     private static final DeferredRegister<EntityType<?>> REGISTER = SantaConstants.createDeferred(BuiltInRegistries.ENTITY_TYPE);
 
-    public static final DeferredHolder<EntityType<?>, EntityType<RoboElf>> ROBO_ELF = REGISTER.register("robo_elf", () -> EntityType.Builder.of(RoboElf::new, MobCategory.CREATURE).sized(1, 1).build("robo_elf"));
+    public static final DeferredHolder<EntityType<?>, EntityType<RoboElf>> ROBO_ELF = REGISTER.register("robo_elf", () -> EntityType.Builder.of(RoboElf::new, MobCategory.MISC).sized(0.8f, 1f).build("robo_elf"));
 
     public static void init(IEventBus eventBus) {
         REGISTER.register(eventBus);

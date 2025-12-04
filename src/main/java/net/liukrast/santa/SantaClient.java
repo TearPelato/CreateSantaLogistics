@@ -10,6 +10,7 @@ import net.liukrast.santa.registry.SantaEntityTypes;
 import net.liukrast.santa.registry.SantaMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -33,14 +34,11 @@ public class SantaClient {
         eventBus.register(this);
         eventBus.addListener(SantaEntityTypes::registerLayerDefinitions);
         eventBus.addListener(SantaEntityTypes::registerRenderers);
+        eventBus.addListener(SantaBlockEntityTypes::registerRenderers);
+        eventBus.addListener(SantaBlockEntityTypes::fmlClientSetup);
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         NeoForge.EVENT_BUS.addListener(this::renderLevelStage);
         NeoForge.EVENT_BUS.addListener(this::clientTick);
-    }
-
-    @SubscribeEvent
-    public void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(SantaBlockEntityTypes.SANTA_DOOR.get(), SantaDoorBlockEntityRenderer::new);
     }
 
     @SubscribeEvent
@@ -67,7 +65,8 @@ public class SantaClient {
         MultiBufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
         var level = Minecraft.getInstance().level;
         assert level != null;
-        SleighRenderer.render(level.dayTime() % 24000 + event.getPartialTick().getGameTimeDeltaPartialTick(true), poseStack, source);
+        float smooth = level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).get() ? event.getPartialTick().getGameTimeDeltaPartialTick(true) : 0;
+        SleighRenderer.render(level.dayTime() % 24000 + smooth, poseStack, source);
         poseStack.popPose();
     }
 }

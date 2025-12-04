@@ -87,7 +87,7 @@ dependencies {
     // at runtime, use the full JEI jar for NeoForge
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
-    implementation "curse.maven:worldedit-225608:5830452"
+    runtimeOnly "curse.maven:worldedit-225608:5830452"
     implementation("net.liukrast:multipart_api-1.21.1:${multipart_api_version}")
 }
 

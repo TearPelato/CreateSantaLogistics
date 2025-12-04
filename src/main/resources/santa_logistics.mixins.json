@@ -4,7 +4,7 @@
   "package": "net.liukrast.santa.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-
+	"GoggleOverlayRendererMixin"
   ],
   "client": [
 	"WifiEffectPacketMixin"
