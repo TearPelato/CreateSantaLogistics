@@ -17,4 +17,16 @@ public class FrostburnEngineBlockEntity extends GeneratingKineticBlockEntity {
             return 0;
         return 16;
     }
+
+    @Override
+    public float calculateAddedStressCapacity() {
+        return super.calculateAddedStressCapacity() * 2;
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        if(!hasSource() || getGeneratedSpeed() > getTheoreticalSpeed())
+            updateGeneratedRotation();
+    }
 }
