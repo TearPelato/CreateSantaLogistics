@@ -1,0 +1,14 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    {
+      "item": "santa_logistics:cryolite_shard"
+    }
+  ],
+  "processing_time": 250,
+  "results": [
+    {
+      "id": "santa_logistics:cryolite_powder"
+    }
+  ]
+}

@@ -15,12 +15,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 
@@ -29,6 +33,20 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 @NonnullDefault
 public class FrostburnEngineBlock extends AbstractMultipartBlock implements IRotate, IBE<FrostburnEngineBlockEntity>, DeployerGoggleInformation {
+    private static final VoxelShape BOTTOM = Shapes.or(
+            box(0,0,0,16,3,16),
+            box(0,12,0,16,16,16)
+    );
+
+    private static final VoxelShape TUBE = Shapes.or(
+            box(3, 4, 3, 13, 16, 13)
+    );
+
+    @Override
+    protected VoxelShape getVisualShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.empty();
+    }
+
     public FrostburnEngineBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(getPartsProperty(), 10));
@@ -164,9 +182,16 @@ public class FrostburnEngineBlock extends AbstractMultipartBlock implements IRot
         var direction = getDirection(state);
         BlockPos origin = getOrigin(pos, statePos, direction);
         BlockPos ten = getPositions().get(10);
-        BlockEntity be = level.getBlockEntity(origin.offset(ten.getX(), ten.getY(), ten.getZ()));
+        BlockEntity be = level.getBlockEntity(getRelative(origin, ten, direction));
         if(be instanceof FrostburnEngineBlockEntity febe)
             return febe.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return true;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        int index = state.getValue(getPartsProperty());
+        if(index > 26) return TUBE;
+        return getPositions().get(index).getY() == 0 ? BOTTOM : super.getShape(state, level, pos, context);
     }
 }

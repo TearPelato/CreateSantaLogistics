@@ -1,0 +1,19 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by LiukRast",
+	"texture_size": [128, 128],
+	"textures": {
+		"0": "santa_logistics:block/frostburn_engine",
+		"particle": "santa_logistics:block/frostburn_engine"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -1, 0]},
+			"faces": {
+				"up": {"uv": [8, 2, 10, 4], "texture": "#0"}
+			}
+		}
+	]
+}

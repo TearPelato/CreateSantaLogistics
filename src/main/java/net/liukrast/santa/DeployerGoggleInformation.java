@@ -13,6 +13,9 @@ import java.util.List;
  * */
 @Deprecated
 public interface DeployerGoggleInformation extends IHaveGoggleInformation {
+    /**
+     * Only invoked for blocks implementing this interface
+     * */
     default boolean addToGoogleTooltip(Level level, BlockPos pos, BlockState state, List<Component> tooltip, boolean isPlayerSneaking) {
         return addToGoggleTooltip(tooltip, isPlayerSneaking);
     }

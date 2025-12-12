@@ -1,5 +1,8 @@
 {
   "required": true,
+  "mixinextras": {
+	"minVersion": "0.5.0"
+  },
   "minVersion": "0.8",
   "package": "net.liukrast.santa.mixin",
   "compatibilityLevel": "JAVA_21",

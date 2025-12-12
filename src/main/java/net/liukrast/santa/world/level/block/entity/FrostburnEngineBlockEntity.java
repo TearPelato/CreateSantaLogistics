@@ -20,7 +20,7 @@ public class FrostburnEngineBlockEntity extends GeneratingKineticBlockEntity {
 
     @Override
     public float calculateAddedStressCapacity() {
-        return super.calculateAddedStressCapacity() * 2;
+        return super.calculateAddedStressCapacity() * 16777216;
     }
 
     @Override

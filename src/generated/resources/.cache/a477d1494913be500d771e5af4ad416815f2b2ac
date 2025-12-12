@@ -1,8 +1,9 @@
-// 1.21.1	2025-12-11T14:30:32.9657841	Block States: santa_logistics
+// 1.21.1	2025-12-12T09:16:17.9342554	Block States: santa_logistics
 88238a1da7912ea1be84538955d1bde31ff1d182 assets/santa_logistics/blockstates/budding_cryolite.json
 90416e2c50d7b78e98f26ddd43610a417c37221c assets/santa_logistics/blockstates/christmas_tree.json
 5fcb84822d1e974b2d3e45e943feda3dd173ea38 assets/santa_logistics/blockstates/cryolite_block.json
 7ee4fdff251cc1e06fdc1127fb60e02259414dd6 assets/santa_logistics/blockstates/elf_charge_station.json
+62fdf7eed7c6e164dfb3193b1d1261ce01c6a494 assets/santa_logistics/blockstates/frostburn_engine.json
 b1eec31134ceb567147e2d5a0b2854bfeab5d985 assets/santa_logistics/models/block/budding_cryolite.json
 2933ccf48f5cf60b5db35835bd430db28c90fa4c assets/santa_logistics/models/block/cryolite_block.json
 4ca212792dead34f06db8103ba80537660cd3f9d assets/santa_logistics/models/item/budding_cryolite.json
