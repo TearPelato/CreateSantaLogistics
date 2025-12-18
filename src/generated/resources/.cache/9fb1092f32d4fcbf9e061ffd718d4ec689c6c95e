@@ -1,5 +1,7 @@
-// 1.21.1	2025-12-11T14:30:32.9713568	Recipes
+// 1.21.1	2025-12-17T18:05:50.4890851	Recipes
 58dc228c2185ca3e3e051ce138b4b9a947abf553 data/santa_logistics/advancement/recipes/building_blocks/cryolite_block.json
+520e94ebaecdb88b6ed4cdcfa5259c7526f9b7e3 data/santa_logistics/advancement/recipes/redstone/elf_charge_station.json
 4e50b4184886fbe1f4af3963a6589ec92cd1a372 data/santa_logistics/advancement/recipes/redstone/santa_dock.json
 5ef79a826891a35a81b134db12d05ee0bb5ca18e data/santa_logistics/recipe/cryolite_block.json
+4df37d3c80c5018b8002d0e50e9ec87bd6e98203 data/santa_logistics/recipe/elf_charge_station.json
 948a19de3a70c3cc5fdc4cb3edda61a3d38d56ae data/santa_logistics/recipe/santa_dock.json

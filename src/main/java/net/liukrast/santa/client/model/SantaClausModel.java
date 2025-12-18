@@ -2,6 +2,7 @@ package net.liukrast.santa.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.world.entity.SantaClaus;
 import net.minecraft.client.model.ArmedModel;
@@ -110,7 +111,7 @@ public class SantaClausModel extends EntityModel<SantaClaus> implements ArmedMod
 
     @Override
     public void translateToHand(HumanoidArm side, PoseStack poseStack) {
-
+        this.right_arm.translateAndRotate(poseStack);
     }
 
     @Override
@@ -145,8 +146,8 @@ public class SantaClausModel extends EntityModel<SantaClaus> implements ArmedMod
         head.xRot = headPitch * (float) (Math.PI / 180.0);
 
         right_arm.resetPose();
-        right_arm.zRot = -0.1f;
         left_arm.resetPose();
+        right_arm.zRot = -0.1f;
         left_arm.zRot = 0.1f;
         right_arm.yRot = 0.5f;
         left_arm.yRot = -0.5f;
@@ -190,11 +191,11 @@ public class SantaClausModel extends EntityModel<SantaClaus> implements ArmedMod
 
             body.xRot = animationTime > 20 ? 0 : -(1-Mth.cos(animationTime*Mth.PI*0.1f))*0.1f;
             chest.xRot = animationTime > 20 ? 0 : -(1-Mth.cos(animationTime*Mth.PI*0.1f))*0.1f;
-            right_arm.xRot = animationTime > 20 ? 0 : -Mth.sin(animationTime*Mth.PI*0.1f)*1.5f;
-            right_arm.zRot = animationTime > 20 ? 0 : -(1-Mth.cos(animationTime*Mth.PI*0.1f))*0.7f;
+            right_arm.xRot = animationTime > 20 ? .5f : -Mth.sin(animationTime*Mth.PI*0.1f)*1.5f + animationTime*.05f*.5f;
+            right_arm.zRot = animationTime > 20 ? -.1f : -(1-Mth.cos(animationTime*Mth.PI*0.1f))*0.7f + animationTime*.05f*-.1f;
 
-            left_arm.xRot = animationTime > 20 ? 0 : -Mth.sin(animationTime*Mth.PI*0.1f)*1.5f;
-            left_arm.zRot = animationTime > 20 ? 0 : (1-Mth.cos(animationTime*Mth.PI*0.1f))*0.7f;
+            left_arm.xRot = animationTime > 20 ? -.5f : -Mth.sin(animationTime*Mth.PI*0.1f)*1.5f + animationTime*.05f*-.5f;
+            left_arm.zRot = animationTime > 20 ? .1f : (1-Mth.cos(animationTime*Mth.PI*0.1f))*0.7f + animationTime*.05f*.1f;
 
             beard.y = -3;
         }

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record SantaDockConfirmInfoPacket(String address, BlockPos pos) implements CustomPacketPayload {
     public static final Type<SantaDockConfirmInfoPacket> PACKET_TYPE = new Type<>(SantaConstants.id("santa_dock_confirm_info"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SantaDockConfirmInfoPacket> CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, SantaDockConfirmInfoPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, SantaDockConfirmInfoPacket::address,
             BlockPos.STREAM_CODEC, SantaDockConfirmInfoPacket::pos,
             SantaDockConfirmInfoPacket::new

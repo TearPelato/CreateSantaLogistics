@@ -15,7 +15,7 @@ import java.util.List;
 
 public record SantaPositionUpdatePacket(BlockPos origin, List<BlockPos> docks) implements CustomPacketPayload {
     public static final Type<SantaPositionUpdatePacket> PACKET_TYPE = new Type<>(SantaConstants.id("santa_position_update"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SantaPositionUpdatePacket> CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, SantaPositionUpdatePacket> STREAM_CODEC = StreamCodec.of(
             SantaPositionUpdatePacket::write, SantaPositionUpdatePacket::new
     );
 

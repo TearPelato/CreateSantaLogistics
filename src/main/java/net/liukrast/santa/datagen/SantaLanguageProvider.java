@@ -22,6 +22,11 @@ public class SantaLanguageProvider extends LanguageProvider {
 
         add(SantaLang.getTooltip(SantaBlocks.PRIME_CRYOLITE_BLOCK), "Creative-only infinite cryolite generator");
 
+        add("container.santa_logistics.robo_elf.trust_gain", "How much trust you will gain");
+        add("container.santa_logistics.robo_elf.energy_usage", "How much energy the elf will consume");
+        add("container.santa_logistics.robo_elf.process_time", "How many seconds it will take to craft this item");
+        add("container.santa_logistics.robo_elf.trust_level", "Your current trust level");
+
         add("fluid.santa_logistics.cryolite", "Cryolite");
         add("fluid.santa_logistics.molten_sugar", "Molten Sugar");
         add(SantaBlocks.CRYOLITE_BLOCK.get(), "Block of Cryolite");

@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.lwjgl.system.NonnullDefault;
 
 @NonnullDefault
@@ -93,10 +94,6 @@ public class SantaClaus extends PathfinderMob {
         this.entityData.set(STATE_ID, value);
     }
 
-    public boolean canEat(ItemStack stack) {
-        return isTypeAFood(stack) || isTypeBFood(stack);
-    }
-
     public boolean isTypeAFood(ItemStack stack) {
         return stack.is(SantaTags.Items.SANTA_FOOD_A);
     }
@@ -105,9 +102,12 @@ public class SantaClaus extends PathfinderMob {
         return stack.is(SantaTags.Items.SANTA_FOOD_B);
     }
 
-    public void incrementSatisfaction(ItemStack stack) {
+    public void incrementSatisfaction(ItemStack stack, boolean typeA) {
 
     }
 
-
+    @Override
+    public void onDamageTaken(DamageContainer damageContainer) {
+        super.onDamageTaken(damageContainer);
+    }
 }

@@ -21,5 +21,13 @@ public class SantaConfig {
             .comment("Defines how many ticks it takes for an elf to lower his stress by 1")
             .defineInRange("elfUnstressCooldown", 400, 0, Integer.MAX_VALUE);
 
+    public static final ModConfigSpec.IntValue TYPE_A_TRUST = BUILDER
+            .comment("How much trust is required to be able to give santa all type A items")
+            .defineInRange("typeATrust", 1000, 0, Integer.MAX_VALUE);
+
+    public static final ModConfigSpec.IntValue TYPE_B_TRUST = BUILDER
+            .comment("How much trust is required to be able to give santa all type A items")
+            .defineInRange("typeBTrust", 10000, 0, Integer.MAX_VALUE);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 }

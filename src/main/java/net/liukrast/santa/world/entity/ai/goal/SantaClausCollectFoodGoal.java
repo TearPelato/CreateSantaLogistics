@@ -1,6 +1,7 @@
 package net.liukrast.santa.world.entity.ai.goal;
 
 import com.simibubi.create.AllFluids;
+import net.liukrast.santa.SantaConfig;
 import net.liukrast.santa.registry.SantaAttachmentTypes;
 import net.liukrast.santa.world.entity.SantaClaus;
 import net.minecraft.world.InteractionHand;
@@ -42,15 +43,14 @@ public class SantaClausCollectFoodGoal extends Goal {
     }
 
     public boolean isValidItem(ItemEntity itemEntity) {
-        return santa.canEat(itemEntity.getItem());
+        return santa.isTypeAFood(itemEntity.getItem()) || santa.isTypeBFood(itemEntity.getItem());
     }
 
-    public boolean matchesMinimumTrust(ItemEntity itemEntity) {
+    public int getTrust(ItemEntity itemEntity) {
         var owner = itemEntity.getOwner();
-        if(owner == null) return false;
-        if(!owner.isAlive()) return false;
-        int trust = owner.getData(SantaAttachmentTypes.TRUST);
-        return trust >= 1000;
+        if(owner == null) return 0;
+        if(!owner.isAlive()) return 0;
+        return owner.getData(SantaAttachmentTypes.TRUST);
     }
 
     public AABB getRange(AABB mobBoundingBox) {
@@ -79,13 +79,15 @@ public class SantaClausCollectFoodGoal extends Goal {
             if(item == null || item.isRemoved()) return;
             List<ItemEntity> list = santa.level().getEntitiesOfClass(ItemEntity.class, getRange(santa.getBoundingBox()), this::isValidItem);
             if(!list.contains(item)) return;
-            if(!matchesMinimumTrust(item)) {
-                santa.setAnimationState(2);
+            boolean a = santa.isTypeAFood(item.getItem());
+            int trust = getTrust(item);
+            if((a && trust >= SantaConfig.TYPE_A_TRUST.getAsInt()) || (!a && trust >= SantaConfig.TYPE_B_TRUST.getAsInt())) {
+                santa.setAnimationState(0);
+                santa.setItemInHand(InteractionHand.MAIN_HAND, item.getItem());
+                item.discard();
                 return;
             }
-            santa.setAnimationState(0);
-            santa.setItemInHand(InteractionHand.MAIN_HAND, item.getItem());
-            item.discard();
+            santa.setAnimationState(2);
         }
     }
 }

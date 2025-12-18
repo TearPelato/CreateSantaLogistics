@@ -9,7 +9,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -43,10 +42,11 @@ public class SantaDockBlock extends BaseEntityBlock implements IWrenchable {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        var provider = getMenuProvider(state, level, pos);
+        if(provider == null) return InteractionResult.PASS;
         if (level.isClientSide) return InteractionResult.SUCCESS;
-        BlockEntity blockentity = level.getBlockEntity(pos);
         String dock = SantaDocks.getDock((ServerLevel) level, pos);
-        if (blockentity instanceof SantaDockBlockEntity be) player.openMenu(be, buf -> {
+        player.openMenu(provider, buf -> {
             buf.writeBlockPos(pos);
             buf.writeUtf(dock == null ? "" : dock);
         });
@@ -60,11 +60,6 @@ public class SantaDockBlock extends BaseEntityBlock implements IWrenchable {
         if(level.isClientSide()) return;
         if(state.is(newState.getBlock())) return;
         SantaDocks.removeDock((ServerLevel) level, pos);
-    }
-
-    @Override
-    protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
-        return null;
     }
 
     @Override

@@ -60,12 +60,9 @@ public class SantaCommands {
                         )
                         .then(Commands.literal("set")
                                 .then(Commands.argument("target", EntityArgument.player())
-                                        .then(Commands.argument("amount", IntegerArgumentType.integer())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(-1_000_000_000, 1_000_000_000))
                                                 .executes(ctx -> setTrust(ctx.getSource(), EntityArgument.getPlayer(ctx, "target"), IntegerArgumentType.getInteger(ctx, "amount")))
                                         )
-                                )
-                                .then(Commands.argument("amount", IntegerArgumentType.integer())
-                                        .executes(ctx -> setTrust(ctx.getSource(), Objects.requireNonNull(ctx.getSource().getPlayer()), IntegerArgumentType.getInteger(ctx, "amount")))
                                 )
                         )
                 )
@@ -142,7 +139,7 @@ public class SantaCommands {
     }
 
     private static int setTrust(CommandSourceStack sourceStack, ServerPlayer player, int trust) {
-        player.setData(SantaAttachmentTypes.TRUST, trust);
+        SantaAttachmentTypes.setTrust(player, trust);
         sourceStack.sendSuccess(() -> Component.translatable("commands.santa.set_target", player.getDisplayName(), trust), true);
         return trust;
     }

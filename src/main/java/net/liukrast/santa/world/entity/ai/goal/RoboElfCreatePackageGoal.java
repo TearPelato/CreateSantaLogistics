@@ -12,6 +12,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.EnumSet;
+
 public class RoboElfCreatePackageGoal extends Goal {
     protected final RoboElf mob;
     private final int maxCooldown;
@@ -19,6 +21,7 @@ public class RoboElfCreatePackageGoal extends Goal {
     public RoboElfCreatePackageGoal(RoboElf mob, int cooldown) {
         this.mob = mob;
         this.maxCooldown = cooldown;
+        setFlags(EnumSet.of(Flag.TARGET));
     }
 
     @Override
@@ -39,7 +42,7 @@ public class RoboElfCreatePackageGoal extends Goal {
     public void tick() {
         if(cooldown > 0) {
             cooldown--;
-            Vec3 m = VecHelper.offsetRandomly(new Vec3(0, 0.25f, 0), mob.level().random, .125f);
+            Vec3 m = VecHelper.offsetRandomly(new Vec3(0, 0.25f, 0), mob.getRandom(), .125f);
             ((ServerLevel)mob.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, mob.getMainHandItem()), mob.getX(), mob.getY(), mob.getZ(), 10, m.x, m.y, m.z, 0.1);
         } else {
             ItemStack stack = mob.getItemInHand(InteractionHand.MAIN_HAND);
@@ -48,7 +51,7 @@ public class RoboElfCreatePackageGoal extends Goal {
             this.mob.spawnAtLocation(packed);
             mob.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             mob.extractCharge(20);
-            this.mob.stress(2);
+            this.mob.stress(5);
         }
     }
 }
