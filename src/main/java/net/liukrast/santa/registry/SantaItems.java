@@ -1,5 +1,9 @@
 package net.liukrast.santa.registry;
 
+import com.simibubi.create.foundation.item.ItemDescription;
+import com.simibubi.create.foundation.item.KineticStats;
+import com.simibubi.create.foundation.item.TooltipModifier;
+import net.createmod.catnip.lang.FontHelper;
 import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.world.item.FrostburnCoreItem;
 import net.liukrast.santa.world.item.PresentItem;
@@ -24,7 +28,7 @@ public class SantaItems {
     public static final DeferredItem<DeferredSpawnEggItem> SANTA_CLAUS_SPAWN_EGG = REGISTER.register("santa_claus_spawn_egg", () -> new DeferredSpawnEggItem(SantaEntityTypes.SANTA_CLAUS, 0xFF0000, 0xFFFFFF, new Item.Properties()));
     public static final DeferredItem<Item> CANDY_CANE = REGISTER.register("candy_cane", () -> new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> FROSTBURN_CORE = REGISTER.register("frostburn_core", () -> new FrostburnCoreItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
+    public static final DeferredItem<Item> FROSTBURN_CORE = REGISTER.register("frostburn_core", () -> wrapWithShiftSummary(new FrostburnCoreItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1))));
 
     public static final DeferredItem<Item> SANTA_KEY = REGISTER.register("santa_key", () -> new Item(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
 
@@ -33,5 +37,16 @@ public class SantaItems {
 
     public static void init(IEventBus eventBus) {
         REGISTER.register(eventBus);
+    }
+
+    /**
+     * Will be replaced with Deployer API
+     * */
+    @Deprecated(forRemoval = true)
+    private static Item wrapWithShiftSummary(Item item) {
+        var modifier = new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+                .andThen(TooltipModifier.mapNull(KineticStats.create(item)));
+        TooltipModifier.REGISTRY.register(item, modifier);
+        return item;
     }
 }

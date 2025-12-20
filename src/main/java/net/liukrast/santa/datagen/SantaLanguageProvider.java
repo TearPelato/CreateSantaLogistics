@@ -3,6 +3,7 @@ package net.liukrast.santa.datagen;
 import net.liukrast.santa.SantaConstants;
 import net.liukrast.santa.SantaLang;
 import net.liukrast.santa.registry.SantaBlocks;
+import net.liukrast.santa.registry.SantaItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -28,7 +29,9 @@ public class SantaLanguageProvider extends LanguageProvider {
         addReplaced("itemGroup.%s", "Create: Santa Logistics");
 
         /* ITEM DESCRIPTIONS */
-        add(SantaLang.getTooltip(SantaBlocks.PRIME_CRYOLITE_BLOCK), "Creative-only infinite cryolite generator");
+        add(SantaBlocks.PRIME_CRYOLITE_BLOCK.get(), "Creative-only infinite cryolite generator");
+        add(SantaItems.FROSTBURN_CORE.get(), "The power of the sun, in the palm of my hand...");
+        add(SantaBlocks.SCHEDULE_CLOCK.get(), "Displays santa claus's schedule time");
 
         /* CONTAINERS */
         addReplaced("container.%s.robo_elf.trust_gain", "How much trust you will gain");

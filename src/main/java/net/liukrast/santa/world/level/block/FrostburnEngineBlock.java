@@ -86,6 +86,20 @@ public class FrostburnEngineBlock extends AbstractMultipartBlock implements IRot
     }
 
     @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        var statePos = getPositions().get(state.getValue(getPartsProperty()));
+        var direction = getDirection(state);
+        BlockPos origin = getOrigin(pos, statePos, direction);
+        BlockPos ten = getPositions().get(10);
+        if(!(level.getBlockEntity(getRelative(origin, ten, direction)) instanceof FrostburnEngineBlockEntity febe))
+            return super.playerWillDestroy(level, pos, state, player);
+        if(febe.getTemperature() < FrostburnEngineBlockEntity.BREAK_TEMPERATURE)
+            return super.playerWillDestroy(level, pos, state, player);
+        febe.explode();
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
     protected void updateIndirectNeighbourShapes(BlockState state, LevelAccessor level, BlockPos pos, int flags, int recursionLeft) {
         if (level.isClientSide())
             return;

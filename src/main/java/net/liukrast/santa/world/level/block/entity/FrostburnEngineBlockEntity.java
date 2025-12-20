@@ -16,7 +16,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.lwjgl.system.NonnullDefault;
@@ -26,10 +31,12 @@ import java.util.List;
 @NonnullDefault
 public class FrostburnEngineBlockEntity extends GeneratingKineticBlockEntity {
     private int temperature = 0;
+    @SuppressWarnings("NotNullFieldNotInitialized")
     public ScrollValueBehaviour overclock;
     private boolean creative = false;
 
-    private static final int MAX_TEMPERATURE = 10000;
+    public static final int BREAK_TEMPERATURE = 5000;
+    public static final int MAX_TEMPERATURE = 10000;
 
     private final IFluidHandler handler = new IFluidHandler() {
         @Override
@@ -88,6 +95,10 @@ public class FrostburnEngineBlockEntity extends GeneratingKineticBlockEntity {
         return handler;
     }
 
+    public int getTemperature() {
+        return this.temperature;
+    }
+
     @Override
     public float getGeneratedSpeed() {
         if(!getBlockState().is(SantaBlocks.FROSTBURN_ENGINE.get()))
@@ -128,7 +139,14 @@ public class FrostburnEngineBlockEntity extends GeneratingKineticBlockEntity {
     public void tick() {
         super.tick();
         if(!creative) temperature = Mth.clamp(temperature + overclock.value, 0, MAX_TEMPERATURE);
+        if(temperature == MAX_TEMPERATURE) explode();
         sendData();
+    }
+
+    public void explode() {
+        //TODO: For some reason doesn't do damage
+        Vec3 pos = getBlockPos().getCenter();
+        this.level.explode(null, level.damageSources().badRespawnPointExplosion(pos), null, pos, 5, true, Level.ExplosionInteraction.BLOCK);
     }
 
     @Override

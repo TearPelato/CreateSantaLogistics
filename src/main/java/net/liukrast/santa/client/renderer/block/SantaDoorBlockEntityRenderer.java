@@ -66,7 +66,10 @@ public class SantaDoorBlockEntityRenderer implements BlockEntityRenderer<SantaDo
     @Override
     public AABB getRenderBoundingBox(SantaDoorBlockEntity blockEntity) {
         var state = blockEntity.getBlockState();
-        var dir = state.getValue(SantaDoorBlock.FACING).getCounterClockWise();
-        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).expandTowards(new Vec3(dir.getStepX()*3, 3, dir.getStepZ()*3));
+        var dir = state.getValue(SantaDoorBlock.FACING);
+        var cl = dir.getCounterClockWise();
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity)
+                .expandTowards(new Vec3(dir.getStepX()*3, 3, dir.getStepZ()*3))
+                .expandTowards(new Vec3(cl.getStepX()*3, 0, cl.getStepZ()*3));
     }
 }
